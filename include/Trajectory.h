@@ -12,6 +12,9 @@ public:
     Eigen::Matrix<float, 6, 6> getPoseCovariance(float queryTime);
 
 private:
+    Eigen::Matrix<float, 4, 4> hatOperator (Eigen::Matrix<float,6,1>);
+    Eigen::Matrix<float, 6, 1> downHatOperator (Eigen::Matrix<float,4,4>);
+    Eigen::Matrix<float, 6, 6> curlyHatOperator (Eigen::Matrix<float,6,1>);
 
 };
 

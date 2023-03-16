@@ -2,6 +2,7 @@
 #define NORLAB_TRAJECTORY_TRAJECTORY_H
 
 #include <Eigen/Core>
+#include <Eigen/Dense>
 
 class Trajectory
 {
@@ -12,10 +13,13 @@ public:
     Eigen::Matrix<float, 6, 6> getPoseCovariance(float queryTime);
 
 private:
-    Eigen::Matrix<float, 4, 4> hatOperator (Eigen::Matrix<float,6,1>);
-    Eigen::Matrix<float, 6, 1> downHatOperator (Eigen::Matrix<float,4,4>);
-    Eigen::Matrix<float, 6, 6> curlyHatOperator (Eigen::Matrix<float,6,1>);
-
+    static Eigen::Matrix<float, 3, 3> hatOperator_SO3(const Eigen::Matrix<float, 3, 1>& vector);
+    static Eigen::Matrix<float, 4, 4> hatOperator(const Eigen::Matrix<float, 6, 1>& vector);
+    static Eigen::Matrix<float, 3, 1> downHatOperator_SO3(const Eigen::Matrix<float, 3, 3>& matrix);
+    static Eigen::Matrix<float, 6, 1> downHatOperator(const Eigen::Matrix<float, 4, 4>& matrix);
+    static Eigen::Matrix<float, 6, 6> curlyHatOperator(const Eigen::Matrix<float, 6, 1>& vector);
+    static Eigen::Matrix<float, 4, 4> exp(const Eigen::Matrix<float, 4, 4>& matrix);
+    static Eigen::Matrix<float, 4, 4> ln(const Eigen::Matrix<float, 4, 4>& matrix);
 };
 
 #endif

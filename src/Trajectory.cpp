@@ -82,9 +82,9 @@ Eigen::Matrix<float, 3, 3> Trajectory::computeQ(const Eigen::Matrix<float, 6, 1>
     return result;
 }
 
-Eigen::Matrix<float,6,6> Trajectory::computeJ(const Eigen::Matrix<float,3,1>& vector,const Eigen::Matrix<float, 3, 3>& Q)
+Eigen::Matrix<float,6,6> Trajectory::computeJ(const Eigen::Matrix<float,6,1>& vector,const Eigen::Matrix<float, 3, 3>& Q)
 {
-    Eigen::Matrix<float,3,3> J_SO3 = Eigen::Matrix3f::Identity() + (1/2) * hatOperator_SO3(vector);
+    Eigen::Matrix<float,3,3> J_SO3 = Eigen::Matrix3f::Identity() + (1/2) * hatOperator_SO3(vector.bottomRows<3>());
     Eigen::Matrix< float, 6,6> result;
     result.topLeftCorner<3,3>() = J_SO3;
     result.topRightCorner<3,3>() = Q;
@@ -92,13 +92,41 @@ Eigen::Matrix<float,6,6> Trajectory::computeJ(const Eigen::Matrix<float,3,1>& ve
     return result;
 }
 
-Eigen::Matrix<float, 12, 12> Trajectory::computePhi(const Eigen::Matrix<float, 6, 1>& generalizedVelocity, const Eigen::Matrix<float, 6, 6>& J, const float& s, const float& t)
+Eigen::Matrix<float, 12, 12> Trajectory::computePhi(const Eigen::Matrix<float, 6, 1>& generalizedVelocity, const Eigen::Matrix<float, 6, 6>& J, const float& t, const float& s)
 {
     Eigen::Matrix<float, 12, 12> result = Eigen::Matrix<float,12,12>::Zero();
-
     result.topLeftCorner<6,6>() = exp6f((t-s) * curlyHatOperator(generalizedVelocity));
-//    result.topRightCorner<6,6>() = Eigen::Matrix<float, 6, 6>::Ones() * (t-s) * J * (t-s) * generalizedVelocity;
+    result.topRightCorner<6,6>() = Eigen::Matrix<float, 6, 6>::Ones() * (t-s) * J * (t-s) * curlyHatOperator(generalizedVelocity);
     result.bottomRightCorner<6,6>() = Eigen::Matrix<float, 6, 6>::Ones();
+    return result;
+}
+
+Eigen::Matrix<float, 12, 12> Trajectory::PowerSpectralDensity(const Eigen::Matrix<float, 6,6>& Qk, const Eigen::Matrix<float, 6, 1>& generalizedVelocity, const float& t, const float& s)
+{
+    float deltaT = t - s;
+    Eigen::Matrix<float, 12, 12> result;
+    result.topLeftCorner<6,6>() = ((1/3) * std::pow(deltaT,3) * Qk)
+            + ((1/8) * std::pow(deltaT, 4) * (curlyHatOperator(generalizedVelocity) * Qk) + (Qk * curlyHatOperator(generalizedVelocity).transpose()))
+            + ((1/20) * std::pow(deltaT,5) * curlyHatOperator(generalizedVelocity) * Qk * curlyHatOperator(generalizedVelocity).transpose());
+    result.topRightCorner<6,6>() = ((1/2) * std::pow(deltaT, 2) * Qk) + ((1/6) * std::pow(deltaT, 3) * curlyHatOperator(generalizedVelocity) * Qk);
+    result.bottomRightCorner<6,6>() = result.topRightCorner<6,6>();
+    result.bottomLeftCorner<6,6>() = deltaT * Qk;
+    return result;
+}
+
+Eigen::Matrix<float, 12, 12> Trajectory::Lambda(const float& tau, const float& tk, const float& tkplus1, const Eigen::Matrix<float, 6,6>& Qk,const Eigen::Matrix<float, 6, 1>& generalizedVelocity, const Eigen::Matrix<float, 6, 6>& J)
+{
+    Eigen::Matrix<float, 12, 12> result;
+    result = computePhi(generalizedVelocity, J, tau, tk) - (PowerSpectralDensity(Qk, generalizedVelocity, tau, tk) * computePhi(generalizedVelocity, J, tkplus1, tau).transpose() *
+            PowerSpectralDensity(Qk, generalizedVelocity, tkplus1, tk).inverse() * computePhi(generalizedVelocity, J, tkplus1, tk));
+    return result;
+}
+
+Eigen::Matrix<float, 12, 12> Trajectory::Psi(const float& tau, const float& tk, const float& tkplus1, const Eigen::Matrix<float, 6,6>& Qk,const Eigen::Matrix<float, 6, 1>& generalizedVelocity, const Eigen::Matrix<float, 6, 6>& J)
+{
+    Eigen::Matrix<float, 12, 12> result;
+    result = PowerSpectralDensity(Qk, generalizedVelocity, tau, tk) * computePhi(generalizedVelocity, J, tkplus1, tau).transpose() *
+            PowerSpectralDensity(Qk, generalizedVelocity, tkplus1, tk);
     return result;
 }
 

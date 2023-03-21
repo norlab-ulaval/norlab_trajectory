@@ -20,8 +20,11 @@ private:
     static Eigen::Matrix<float, 6, 6> curlyHatOperator(const Eigen::Matrix<float, 6, 1>& vector);
     static Eigen::Matrix<float, 6, 1> downCurlyHatOperator(const Eigen::Matrix<float, 6, 6>& matrix);
     static Eigen::Matrix<float, 3, 3> computeQ(const Eigen::Matrix<float, 6, 1>& vector);
-    static Eigen::Matrix<float, 6, 6> computeJ(const Eigen::Matrix<float, 3, 1>& vector, const Eigen::Matrix<float, 3, 3>& Q);
+    static Eigen::Matrix<float, 6, 6> computeJ(const Eigen::Matrix<float, 6, 1>& vector, const Eigen::Matrix<float, 3, 3>& Q);
     static Eigen::Matrix<float, 12, 12> computePhi(const Eigen::Matrix<float, 6, 1>& generalizedVelocity, const Eigen::Matrix<float, 6, 6>& J, const float& s, const float& t);
+    static Eigen::Matrix<float, 12, 12> PowerSpectralDensity(const Eigen::Matrix<float, 6,6>& Qk, const Eigen::Matrix<float, 6, 1>& generalizedVelocity, const float& t, const float& s);
+    static Eigen::Matrix<float, 12, 12> Lambda(const float& tau, const float& tk, const float& tkplus1, const Eigen::Matrix<float, 6,6>& Qk,const Eigen::Matrix<float, 6, 1>& generalizedVelocity, const Eigen::Matrix<float, 6, 6>& J);
+    static Eigen::Matrix<float, 12, 12> Psi(const float& tau, const float& tk, const float& tkplus1, const Eigen::Matrix<float, 6,6>& Qk,const Eigen::Matrix<float, 6, 1>& generalizedVelocity, const Eigen::Matrix<float, 6, 6>& J);
     static Eigen::Matrix<float, 4, 4> exp4f(const Eigen::Matrix<float, 4, 4>& matrix);
     static Eigen::Matrix<float, 4, 4> ln(const Eigen::Matrix<float, 4, 4>& matrix);
     static Eigen::Matrix<float, 6, 6> exp6f(const Eigen::Matrix<float, 6, 6>& matrix);

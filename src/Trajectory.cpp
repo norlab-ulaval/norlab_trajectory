@@ -70,15 +70,39 @@ Eigen::Matrix<float, 6, 6> Trajectory::curlyHatOperator(const Eigen::Matrix<floa
     return result;
 }
 
-Eigen::Matrix<float, 6, 6> Trajectory::computeJ(const Eigen::Matrix<float, 6, 6>& matrix)
+Eigen::Matrix<float, 3, 3> Trajectory::computeQ(const Eigen::Matrix<float, 6, 1>& vector)
 {
+    Eigen::Matrix<float, 3, 3> result;
+    Eigen::Matrix<float, 3, 1> rho = vector.topRows<3>(); Eigen::Matrix<float, 3, 3> rhoHat = hatOperator_SO3(vector.topRows<3>());
+    Eigen::Matrix<float, 3, 1> phi = vector.bottomRows<3>(); Eigen::Matrix<float, 3, 3> phiHat = hatOperator_SO3(vector.bottomRows<3>());
+    float _phi = vector.bottomRows<3>().norm();
+    result = ((1/2) * hatOperator_SO3(phi)) + ((_phi - std::sin(_phi)) / std::pow(_phi,3)) * (phiHat * rhoHat + rhoHat * phiHat + phiHat * rhoHat * phiHat)
+            + ((std::pow(_phi, 2) + 2 * std::cos(_phi) - 2) / 2 * std::pow(_phi, 4)) * (phiHat * phiHat * rhoHat + rhoHat * phiHat * phiHat + 3 * phiHat * rhoHat * phiHat)
+            + ((2 * _phi - 3 * std::sin(_phi) + _phi * std::cos(_phi)) / 2 * std::pow(_phi,5)) * (phiHat * rhoHat * phiHat * phiHat + phiHat * phiHat * rhoHat * phiHat);
+    return result;
+}
+
+Eigen::Matrix<float,6,6> Trajectory::computeJ(const Eigen::Matrix<float,3,1>& vector,const Eigen::Matrix<float, 3, 3>& Q)
+{
+    Eigen::Matrix<float,3,3> J_SO3 = Eigen::Matrix3f::Identity() + (1/2) * hatOperator_SO3(vector);
+    Eigen::Matrix< float, 6,6> result;
+    result.topLeftCorner<3,3>() = J_SO3;
+    result.topRightCorner<3,3>() = Q;
+    result.bottomRightCorner<3,3>() = J_SO3;
+    return result;
 }
 
 Eigen::Matrix<float, 12, 12> Trajectory::computePhi(const Eigen::Matrix<float, 6, 1>& generalizedVelocity, const Eigen::Matrix<float, 6, 6>& J, const float& s, const float& t)
 {
+    Eigen::Matrix<float, 12, 12> result = Eigen::Matrix<float,12,12>::Zero();
+
+    result.topLeftCorner<6,6>() = exp6f((t-s) * curlyHatOperator(generalizedVelocity));
+//    result.topRightCorner<6,6>() = Eigen::Matrix<float, 6, 6>::Ones() * (t-s) * J * (t-s) * generalizedVelocity;
+    result.bottomRightCorner<6,6>() = Eigen::Matrix<float, 6, 6>::Ones();
+    return result;
 }
 
-Eigen::Matrix<float, 4, 4> Trajectory::exp(const Eigen::Matrix<float, 4, 4>& matrix)
+Eigen::Matrix<float, 4, 4> Trajectory::exp4f(const Eigen::Matrix<float, 4, 4>& matrix)
 {
     float phi = downHatOperator(matrix).bottomRows<3>().norm();
     Eigen::Matrix3f V = Eigen::Matrix3f::Identity() + (1 - std::cos(phi)) / std::pow(phi, 2) * matrix.topLeftCorner<3, 3>() -
@@ -103,7 +127,7 @@ Eigen::Matrix<float, 4, 4> Trajectory::ln(const Eigen::Matrix<float, 4, 4>& matr
     return result;
 }
 
-Eigen::Matrix<float, 6, 6> Trajectory::exp(const Eigen::Matrix<float, 6, 6>& matrix)
+Eigen::Matrix<float, 6, 6> Trajectory::exp6f(const Eigen::Matrix<float, 6, 6>& matrix)
 {
     Eigen::Matrix<float, 6, 1> zeta = downCurlyHatOperator(matrix);
     float phi = zeta.bottomRows<3>().norm();

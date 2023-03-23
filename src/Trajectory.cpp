@@ -82,21 +82,21 @@ Eigen::Matrix<float, 3, 3> Trajectory::computeQ(const Eigen::Matrix<float, 6, 1>
     return result;
 }
 
-Eigen::Matrix<float,6,6> Trajectory::computeJ(const Eigen::Matrix<float,6,1>& vector,const Eigen::Matrix<float, 3, 3>& Q)
+Eigen::Matrix<float,6,6> Trajectory::computeJ(const Eigen::Matrix<float,6,1>& vector)
 {
     Eigen::Matrix<float,3,3> J_SO3 = Eigen::Matrix3f::Identity() + (1/2) * hatOperator_SO3(vector.bottomRows<3>());
     Eigen::Matrix< float, 6,6> result;
     result.topLeftCorner<3,3>() = J_SO3;
-    result.topRightCorner<3,3>() = Q;
+    result.topRightCorner<3,3>() = computeQ(vector);
     result.bottomRightCorner<3,3>() = J_SO3;
     return result;
 }
 
-Eigen::Matrix<float, 12, 12> Trajectory::computePhi(const Eigen::Matrix<float, 6, 1>& generalizedVelocity, const Eigen::Matrix<float, 6, 6>& J, const float& t, const float& s)
+Eigen::Matrix<float, 12, 12> Trajectory::computePhi(const Eigen::Matrix<float, 6, 1>& generalizedVelocity, const float& t, const float& s)
 {
     Eigen::Matrix<float, 12, 12> result = Eigen::Matrix<float,12,12>::Zero();
     result.topLeftCorner<6,6>() = exp6f((t-s) * curlyHatOperator(generalizedVelocity));
-    result.topRightCorner<6,6>() = Eigen::Matrix<float, 6, 6>::Ones() * (t-s) * J * (t-s) * curlyHatOperator(generalizedVelocity);
+    result.topRightCorner<6,6>() = Eigen::Matrix<float, 6, 6>::Ones() * (t-s) * computeJ((t-s) * generalizedVelocity);
     result.bottomRightCorner<6,6>() = Eigen::Matrix<float, 6, 6>::Ones();
     return result;
 }

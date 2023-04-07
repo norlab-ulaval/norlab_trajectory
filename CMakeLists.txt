@@ -9,11 +9,14 @@ find_package(ament_cmake REQUIRED)
 find_package (Eigen3 3.3 REQUIRED)
 find_package (steam)
 find_package(Boost COMPONENTS system REQUIRED)
+find_package(pybind11 2.5.0 REQUIRED)
 
 include_directories(include)
 
 add_library(norlab_trajectory src/Trajectory.cpp)
 ament_target_dependencies(norlab_trajectory Eigen3 steam Boost)
+
+pybind11_add_module(pypointmatcher python/bindings.cpp)
 
 add_executable(main src/main.cpp)
 target_link_libraries (main norlab_trajectory)

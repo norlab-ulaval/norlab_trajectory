@@ -1,8 +1,8 @@
 #ifndef NORLAB_TRAJECTORY_TRAJECTORY_H
 #define NORLAB_TRAJECTORY_TRAJECTORY_H
 
-#include <Eigen/Core>
 #include <steam.hpp>
+#include <eigen3/Eigen/Core>
 
 class Trajectory
 {

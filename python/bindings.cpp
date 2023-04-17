@@ -2,21 +2,16 @@
 #include <pybind11/eigen.h>
 #include <pybind11/stl.h>
 #include <pybind11/stl_bind.h>
+#include "Trajectory.h"
 
-PYBIND11_MODULE(pypointmatcher, module)
+namespace py = pybind11;
+
+PYBIND11_MODULE(trajectory, trajectory_module_handle)
 {
-module.doc() = "Python bindings of libpointmatcher";
+    trajectory_module_handle.doc() = "Python bindings of Trajectory";
 
-python::modules::pybindPointMatcherModule(module);
-}
-
-
-void pybindPointMatcher(py::module& p_module)
-{
-    py::class_<PM> pyPointmatcher(p_module, "PointMatcher");
-
-    pyPointmatcher
-            .doc() = "Functions and classes that are dependant on scalar type are defined in this templatized class";
-
-    pybindMatches(pyPointmatcher);
+    py::class_<Trajectory>(trajectory_module_handle, "Trajectory")
+            .def(py::init<std::vector<std::pair <float, Eigen::Matrix4f>>>(), py::arg("poses"))
+            .def("getPose", &Trajectory::getPose, py::arg("time"))
+            .def("getPoseCovariance", &Trajectory::getPoseCovariance, py::arg("time"));
 }

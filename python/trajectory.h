@@ -1,6 +1,0 @@
-#ifndef NORLAB_TRAJECTORY_TRAJECTORY_H
-#define NORLAB_TRAJECTORY_TRAJECTORY_H
-
-void pybindMatches(py::class_<PM>& p_class);
-
-#endif //NORLAB_TRAJECTORY_TRAJECTORY_H

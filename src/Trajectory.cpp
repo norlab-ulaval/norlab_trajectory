@@ -12,18 +12,18 @@ Trajectory::Trajectory(std::vector<std::pair<float, Eigen::Matrix4f>> poses) {
         problem.addStateVariable(T_vi);
         problem.addStateVariable(w_iv_inv);
         Eigen::Vector3d reference = Eigen::Vector3d::Zero();
-        std::shared_ptr<steam::p2p::P2PErrorEvaluator> error_func = std::make_shared<steam::p2p::P2PErrorEvaluator>(
-                T_vi, reference.transpose(), poses[i].second.topRightCorner<3, 1>().cast<double>());
-        std::shared_ptr<steam::StaticNoiseModel<3>> noiseModel = std::make_shared<steam::StaticNoiseModel<3>>(
-                Eigen::Matrix3d::Identity(), steam::NoiseType::INFORMATION);
-        std::shared_ptr<steam::L2LossFunc> lossFunc = std::make_shared<steam::L2LossFunc>();
-        std::shared_ptr<steam::WeightedLeastSqCostTerm<3>> costTerm = std::make_shared<steam::WeightedLeastSqCostTerm<3>>(
-                error_func, noiseModel, lossFunc);
-        problem.addCostTerm(costTerm);
+//        std::shared_ptr<steam::p2p::P2PErrorEvaluator> error_func = std::make_shared<steam::p2p::P2PErrorEvaluator>(
+//                T_vi, reference.transpose(), poses[i].second.topRightCorner<3, 1>().cast<double>());
+//        std::shared_ptr<steam::StaticNoiseModel<3>> noiseModel = std::make_shared<steam::StaticNoiseModel<3>>(
+//                Eigen::Matrix3d::Identity(), steam::NoiseType::INFORMATION);
+//        std::shared_ptr<steam::L2LossFunc> lossFunc = std::make_shared<steam::L2LossFunc>();
+//        std::shared_ptr<steam::WeightedLeastSqCostTerm<3>> costTerm = std::make_shared<steam::WeightedLeastSqCostTerm<3>>(
+//                error_func, noiseModel, lossFunc);
+//        problem.addCostTerm(costTerm);
     }
-    steam::GaussNewtonSolver::Params params;
-    steam::GaussNewtonSolver solver(problem,params);
-    solver.optimize();
+//    steam::GaussNewtonSolver::Params params;
+//    steam::GaussNewtonSolver solver(problem,params);
+//    solver.optimize();
 }
 
 Eigen::Matrix4f Trajectory::getPose(float queryTime) {

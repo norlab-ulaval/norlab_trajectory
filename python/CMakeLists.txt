@@ -15,7 +15,6 @@ include_directories(/home/effie/ros2_ws/install/lgmath/include)
 find_package(pybind11 2.5.0 REQUIRED)
 find_package (Python3 COMPONENTS Interpreter Development)
 find_package (steam REQUIRED)
-find_package(OpenMP)
 
 if (pybind11_FOUND)
     pybind11_add_module(trajectory ${PYBIND11_SOURCES})

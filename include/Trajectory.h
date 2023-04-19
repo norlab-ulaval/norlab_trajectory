@@ -1,6 +1,9 @@
 #ifndef NORLAB_TRAJECTORY_TRAJECTORY_H
 #define NORLAB_TRAJECTORY_TRAJECTORY_H
 
+#define EIGEN_DONT_VECTORIZE
+#define EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
+
 #include <steam.hpp>
 #include <eigen3/Eigen/Core>
 

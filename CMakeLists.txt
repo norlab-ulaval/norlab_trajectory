@@ -19,8 +19,6 @@ find_package(OpenMP REQUIRED)
 include_directories(include)
 include_directories(${EIGEN3_INCLUDE_DIR})
 
-#include_directories(${steam_INCLUDE_DIR})
-
 add_library(norlab_trajectory src/Trajectory.cpp)
 ament_target_dependencies(norlab_trajectory Eigen3 steam Boost)
 

@@ -9,9 +9,9 @@ Trajectory::Trajectory(std::vector<std::pair<float, Eigen::Matrix4f>> poses)
         std::shared_ptr<steam::vspace::VSpaceStateVar<6>> w_iv_inv = steam::vspace::VSpaceStateVar<6>::MakeShared(Eigen::Matrix<double, 6, 1>::Zero());
         if(i == 0)
         {
-            T_vi->locked() = true;
             w_iv_inv->locked() = true;
         }
+        T_vi->locked() = true;
 
         traj.add(steam::traj::Time(poses[i].first), T_vi, w_iv_inv);
         problem.addStateVariable(T_vi);
@@ -34,6 +34,8 @@ Trajectory::Trajectory(std::vector<std::pair<float, Eigen::Matrix4f>> poses)
 Eigen::Matrix4f Trajectory::getPose(float queryTime)
 {
     return traj.getPoseInterpolator(queryTime)->value().matrix().cast<float>();
+//    return traj.getPoseInterpolator(queryTime)->evaluate().matrix().cast<float>();
+
 }
 
 Eigen::Matrix<float, 6, 6> Trajectory::getPoseCovariance(float queryTime)

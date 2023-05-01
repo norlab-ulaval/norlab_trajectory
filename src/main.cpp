@@ -13,6 +13,6 @@ int main(int argc, char **argv) {
         poses.emplace_back(i,pose);
     }
     Trajectory traj(poses);
-        std::cout << "Hello World!" << std::endl;
+    std::cout << "Hello World !" << std::endl;
     return 0;
 }

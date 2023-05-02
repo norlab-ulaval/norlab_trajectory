@@ -1,26 +1,23 @@
 #include "Trajectory.h"
 
-Trajectory::Trajectory(std::vector<std::pair<float, Eigen::Matrix4f>> poses)
+Trajectory::Trajectory(std::vector<std::pair<float, Eigen::Matrix4f>> poses):
+        traj(Eigen::Matrix<double, 6, 1>::Ones())
 {
     for(int i = 0; i < poses.size(); ++i)
     {
         Eigen::Matrix4d T = poses[i].second.cast<double>();
         std::shared_ptr<steam::se3::SE3StateVar> T_vi = steam::se3::SE3StateVar::MakeShared(lgmath::se3::Transformation(T));
         std::shared_ptr<steam::vspace::VSpaceStateVar<6>> w_iv_inv = steam::vspace::VSpaceStateVar<6>::MakeShared(Eigen::Matrix<double, 6, 1>::Zero());
-        if(i == 0)
-        {
-            w_iv_inv->locked() = true;
-        }
-        T_vi->locked() = true;
 
         traj.add(steam::traj::Time(poses[i].first), T_vi, w_iv_inv);
         problem.addStateVariable(T_vi);
         problem.addStateVariable(w_iv_inv);
 
-        std::shared_ptr<steam::p2p::P2PErrorEvaluator> errorFunc = steam::p2p::P2PErrorEvaluator::MakeShared(T_vi, Eigen::Vector3d::Zero(), poses[i].second.topRightCorner<3, 1>().cast<double>());
-        std::shared_ptr<steam::StaticNoiseModel<3>> noiseModel = steam::StaticNoiseModel<3>::MakeShared(Eigen::Matrix3d::Identity(), steam::NoiseType::INFORMATION);
+        std::shared_ptr<steam::se3::SE3ErrorEvaluator> errorFunc = steam::se3::SE3ErrorEvaluator::MakeShared(T_vi, lgmath::se3::Transformation(T));
+        std::shared_ptr<steam::StaticNoiseModel<6>> noiseModel = steam::StaticNoiseModel<6>::MakeShared(Eigen::Matrix<double, 6, 6>::Identity() * 100000,
+                                                                                                        steam::NoiseType::INFORMATION);
         std::shared_ptr<steam::L2LossFunc> lossFunc = steam::L2LossFunc::MakeShared();
-        std::shared_ptr<steam::WeightedLeastSqCostTerm<3>> costTerm = steam::WeightedLeastSqCostTerm<3>::MakeShared(errorFunc, noiseModel, lossFunc);
+        std::shared_ptr<steam::WeightedLeastSqCostTerm<6>> costTerm = steam::WeightedLeastSqCostTerm<6>::MakeShared(errorFunc, noiseModel, lossFunc);
         problem.addCostTerm(costTerm);
     }
     traj.addPriorCostTerms(problem);
@@ -34,8 +31,6 @@ Trajectory::Trajectory(std::vector<std::pair<float, Eigen::Matrix4f>> poses)
 Eigen::Matrix4f Trajectory::getPose(float queryTime)
 {
     return traj.getPoseInterpolator(queryTime)->value().matrix().cast<float>();
-//    return traj.getPoseInterpolator(queryTime)->evaluate().matrix().cast<float>();
-
 }
 
 Eigen::Matrix<float, 6, 6> Trajectory::getPoseCovariance(float queryTime)

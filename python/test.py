@@ -20,9 +20,6 @@ for time_stamp in time_stamps :
 values_x = [pose[1][0][3] for pose in poses]
 values_y = [pose[1][1][3] for pose in poses]
 
-print(poses[2][1])
-print(traj.getPose(2.5))
-
 values_x_estim = [pose[0][3] for pose in traj_estim]
 values_y_estim = [pose[1][3] for pose in traj_estim]
 

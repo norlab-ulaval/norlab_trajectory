@@ -6,12 +6,12 @@
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(trajectory, trajectory_module_handle)
+PYBIND11_MODULE(pynorlab_trajectory, trajectory_module_handle)
 {
     trajectory_module_handle.doc() = "Python bindings of Trajectory";
 
     py::class_<Trajectory>(trajectory_module_handle, "Trajectory")
-            .def(py::init<std::vector<std::pair <float, Eigen::Matrix4f>>>(), py::arg("poses"))
+            .def(py::init<std::vector<std::pair<float, Eigen::Matrix4f>>>(), py::arg("poses"))
             .def("getPose", &Trajectory::getPose, py::arg("time"))
             .def("getPoseCovariance", &Trajectory::getPoseCovariance, py::arg("time"));
 }

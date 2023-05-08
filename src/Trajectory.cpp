@@ -1,6 +1,6 @@
 #include "Trajectory.h"
 
-Trajectory::Trajectory(std::vector<std::pair<float, Eigen::Matrix4f>> poses):
+Trajectory::Trajectory(std::vector<std::pair<double, Eigen::Matrix4f>> poses):
         traj(Eigen::Matrix<double, 6, 1>::Ones())
 {
     for(int i = 0; i < poses.size(); ++i)

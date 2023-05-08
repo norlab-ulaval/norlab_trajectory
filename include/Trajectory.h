@@ -7,7 +7,7 @@
 class Trajectory
 {
 public:
-    Trajectory(std::vector<std::pair<float, Eigen::Matrix4f>> poses);
+    Trajectory(std::vector<std::pair<double, Eigen::Matrix4f>> poses);
     Eigen::Matrix4f getPose(float queryTime);
     Eigen::Matrix<float, 6, 6> getPoseCovariance(float queryTime);
 private:

@@ -25,12 +25,6 @@ ament_target_dependencies(norlab_trajectory steam)
 target_link_libraries(norlab_trajectory Eigen3::Eigen OpenMP::OpenMP_CXX)
 ament_export_dependencies(norlab_trajectory steam)
 
-add_executable(main src/main.cpp)
-target_link_libraries (main norlab_trajectory)
-install(TARGETS norlab_trajectory main
-  DESTINATION lib/${PROJECT_NAME}
-)
-
 if (pybind11_FOUND)
   ament_python_install_package(${PROJECT_NAME})
   pybind11_add_module(pynorlab_trajectory src/bindings.cpp)

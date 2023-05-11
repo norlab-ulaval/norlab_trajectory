@@ -39,10 +39,8 @@ Eigen::Matrix4f Trajectory::getPose(double queryTime)
     return traj.getPoseInterpolator(queryTime - firstPointTimeStamp)->value().matrix().cast<float>();
 }
 
-Eigen::Matrix<float, 6, 6> Trajectory::getPoseCovariance(double queryTime)
+Eigen::Matrix<float, 12, 12> Trajectory::getPoseCovariance(double queryTime)
 {
     steam::Covariance covariance(problem);
-    Eigen::Matrix4d pose = getPose(queryTime - firstPointTimeStamp).cast<double>();
-    std::shared_ptr<steam::se3::SE3StateVar> pose_state_var = std::make_shared<steam::se3::SE3StateVar>(lgmath::se3::Transformation(pose));
-    return covariance.query(pose_state_var).cast<float>();
+    return traj.getCovariance(covariance, steam::traj::Time(queryTime - firstPointTimeStamp)).cast<float>();
 }

@@ -3,13 +3,19 @@
 Trajectory::Trajectory(std::vector<std::pair<double, Eigen::Matrix4f>> poses):
         traj(Eigen::Matrix<double, 6, 1>::Ones())
 {
+    if(poses.empty())
+    {
+        throw std::runtime_error("Trajectory must contain at least one point.");
+    }
+
+    firstPointTimeStamp = poses[0].first;
     for(int i = 0; i < poses.size(); ++i)
     {
         Eigen::Matrix4d T = poses[i].second.cast<double>();
         std::shared_ptr<steam::se3::SE3StateVar> T_vi = steam::se3::SE3StateVar::MakeShared(lgmath::se3::Transformation(T));
         std::shared_ptr<steam::vspace::VSpaceStateVar<6>> w_iv_inv = steam::vspace::VSpaceStateVar<6>::MakeShared(Eigen::Matrix<double, 6, 1>::Zero());
 
-        traj.add(steam::traj::Time(poses[i].first), T_vi, w_iv_inv);
+        traj.add(steam::traj::Time(poses[i].first - firstPointTimeStamp), T_vi, w_iv_inv);
         problem.addStateVariable(T_vi);
         problem.addStateVariable(w_iv_inv);
 
@@ -28,15 +34,15 @@ Trajectory::Trajectory(std::vector<std::pair<double, Eigen::Matrix4f>> poses):
     solver.optimize();
 }
 
-Eigen::Matrix4f Trajectory::getPose(float queryTime)
+Eigen::Matrix4f Trajectory::getPose(double queryTime)
 {
-    return traj.getPoseInterpolator(queryTime)->value().matrix().cast<float>();
+    return traj.getPoseInterpolator(queryTime - firstPointTimeStamp)->value().matrix().cast<float>();
 }
 
-Eigen::Matrix<float, 6, 6> Trajectory::getPoseCovariance(float queryTime)
+Eigen::Matrix<float, 6, 6> Trajectory::getPoseCovariance(double queryTime)
 {
     steam::Covariance covariance(problem);
-    Eigen::Matrix4d pose = getPose(queryTime).cast<double>();
+    Eigen::Matrix4d pose = getPose(queryTime - firstPointTimeStamp).cast<double>();
     std::shared_ptr<steam::se3::SE3StateVar> pose_state_var = std::make_shared<steam::se3::SE3StateVar>(lgmath::se3::Transformation(pose));
     return covariance.query(pose_state_var).cast<float>();
 }

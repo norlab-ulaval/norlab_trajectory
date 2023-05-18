@@ -11,7 +11,8 @@ PYBIND11_MODULE(pynorlab_trajectory, trajectory_module_handle)
     trajectory_module_handle.doc() = "Python bindings of Trajectory";
 
     py::class_<Trajectory>(trajectory_module_handle, "Trajectory")
-            .def(py::init<std::vector<std::pair<double, Eigen::Matrix4f>>>(), py::arg("poses"))
+            .def(py::init<std::vector<double>, std::vector<Eigen::Matrix4f>, std::vector<Eigen::Matrix<float, 6, 6>>>(), py::arg("timeStamps"), py::arg("poses"),
+                 py::arg("covariances"))
             .def("getPose", &Trajectory::getPose, py::arg("time"))
             .def("getPoseCovariance", &Trajectory::getPoseCovariance, py::arg("time"));
 }

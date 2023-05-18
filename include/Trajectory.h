@@ -7,7 +7,7 @@
 class Trajectory
 {
 public:
-    Trajectory(std::vector<std::pair<double, Eigen::Matrix4f>> poses);
+    Trajectory(const std::vector<double>& timeStamps, const std::vector<Eigen::Matrix4f>& poses, const std::vector<Eigen::Matrix<float, 6, 6>>& covariances);
     Eigen::Matrix4f getPose(double queryTime);
     Eigen::Matrix<float, 12, 12> getPoseCovariance(double queryTime);
 private:
@@ -15,6 +15,5 @@ private:
     steam::OptimizationProblem problem;
     double firstPointTimeStamp;
 };
-
 
 #endif

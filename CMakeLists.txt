@@ -23,11 +23,19 @@ include_directories(include)
 add_library(norlab_trajectory src/Trajectory.cpp)
 ament_target_dependencies(norlab_trajectory steam)
 target_link_libraries(norlab_trajectory Eigen3::Eigen OpenMP::OpenMP_CXX)
-ament_export_dependencies(norlab_trajectory steam)
 
-install(TARGETS norlab_trajectory
-  DESTINATION lib/${PROJECT_NAME}
+install(DIRECTORY include
+  DESTINATION include/${PROJECT_NAME}
 )
+install(TARGETS norlab_trajectory
+  EXPORT export_norlab_trajectory
+  RUNTIME DESTINATION bin
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+)
+ament_export_include_directories("include/${PROJECT_NAME}/include")
+ament_export_libraries(norlab_trajectory)
+ament_export_dependencies(steam)
 
 if (pybind11_FOUND)
   ament_python_install_package(${PROJECT_NAME})

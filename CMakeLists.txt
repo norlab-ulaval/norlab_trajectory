@@ -18,7 +18,7 @@ find_package(OpenMP REQUIRED)
 find_package(pybind11 2.5.0 REQUIRED)
 find_package (Python3 COMPONENTS Interpreter Development)
 
-include_directories(include)
+include_directories(include/norlab_trajectory)
 
 add_library(norlab_trajectory src/Trajectory.cpp)
 ament_target_dependencies(norlab_trajectory steam)

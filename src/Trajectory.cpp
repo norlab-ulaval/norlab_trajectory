@@ -1,6 +1,7 @@
 #include "Trajectory.h"
 
-Trajectory::Trajectory(const std::vector<double>& timeStamps, const std::vector<Eigen::Matrix4f>& poses, const std::vector<Eigen::Matrix<float, 6, 6>>& covariances):
+norlab_trajectory::Trajectory::Trajectory(const std::vector<double>& timeStamps, const std::vector<Eigen::Matrix4f>& poses,
+                                          const std::vector<Eigen::Matrix<float, 6, 6>>& covariances):
         traj(Eigen::Matrix<double, 6, 1>::Ones())
 {
     if(timeStamps.size() != poses.size() || timeStamps.size() != covariances.size())
@@ -14,7 +15,7 @@ Trajectory::Trajectory(const std::vector<double>& timeStamps, const std::vector<
     }
 
     firstPointTimeStamp = timeStamps[0];
-    for(int i = 0; i < poses.size(); ++i)
+    for(size_t i = 0; i < poses.size(); ++i)
     {
         Eigen::Matrix4d T = poses[i].cast<double>();
         std::shared_ptr<steam::se3::SE3StateVar> T_vi = steam::se3::SE3StateVar::MakeShared(lgmath::se3::Transformation(T));
@@ -38,12 +39,12 @@ Trajectory::Trajectory(const std::vector<double>& timeStamps, const std::vector<
     solver.optimize();
 }
 
-Eigen::Matrix4f Trajectory::getPose(double queryTime)
+Eigen::Matrix4f norlab_trajectory::Trajectory::getPose(double queryTime)
 {
     return traj.getPoseInterpolator(queryTime - firstPointTimeStamp)->value().matrix().cast<float>();
 }
 
-Eigen::Matrix<float, 12, 12> Trajectory::getPoseCovariance(double queryTime)
+Eigen::Matrix<float, 12, 12> norlab_trajectory::Trajectory::getPoseCovariance(double queryTime)
 {
     steam::Covariance covariance(problem);
     return traj.getCovariance(covariance, steam::traj::Time(queryTime - firstPointTimeStamp)).cast<float>();

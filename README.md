@@ -25,7 +25,7 @@ sudo apt-get install libeigen3-dev
 ## Install lgmath using ROS2
 
 ```````
-cd ~/ros2_ws
+cd ~/ros2_ws/src/
 git clone https://github.com/norlab-ulaval/lgmath.git
 ```````
 Or follow the instructions here : [https://github.com/norlab-ulaval/lgmath](https://github.com/norlab-ulaval/lgmath).
@@ -33,7 +33,7 @@ Or follow the instructions here : [https://github.com/norlab-ulaval/lgmath](http
 ## Install steam using ROS2
 
 ```````
-cd ~/ros2_ws
+cd ~/ros2_ws/Src/
 git clone https://github.com/norlab-ulaval/steam.git
 ```````
 

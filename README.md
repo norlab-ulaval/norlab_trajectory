@@ -33,7 +33,7 @@ Or follow the instructions here : [https://github.com/norlab-ulaval/lgmath](http
 ## Install steam using ROS2
 
 ```````
-cd ~/ros2_ws/Src/
+cd ~/ros2_ws/src/
 git clone https://github.com/norlab-ulaval/steam.git
 ```````
 

@@ -19,24 +19,38 @@ OUTPUT_PATH = Path(__file__).absolute().parents[1] / 'examples' / 'output'
 import argparse
 
 
-def main(input_file, covariance, points, quiver, output):
+def main(input_file, covariance=1e-7, points=1, quiver=False, output=None):
     """
-    This function reads a csv file containing a trajectory and interpolates it with a given covariance value.
-    :param input_file: Name of the input file containing the trajectory of the robot.
-    :param covariance: Covariance value for interpolation.
-    :param points: Number of points between two timestamps, default value is 1.
-    :param quiver: Quiver plot for the normal vectors.
+    Interpolates a trajectory read from a CSV file with a given covariance value.
+
+    Parameters
+    ----------
+    input_file : str
+        Name of the input file containing the trajectory of the robot.
+    covariance : float, optional
+        Covariance value for interpolation, default is 1e-7.
+    points : int, optional
+        Number of points between two timestamps, default is 1.
+    quiver : bool, optional
+        Whether to plot quiver arrows for the normal vectors, default is False.
+    output : str, optional
+        Name of the output file for the interpolated trajectory, default is None.
+
+    Returns
+    -------
+    None
+        The function plots the measured and interpolated trajectory and saves the interpolated trajectory to a CSV file if specified.
     """
     traj_estim = []
-    df = pd.read_csv(BASE_PATH / f'{input_file}', usecols=["Timestamp", "X", "Y", "Z", "qx", "qy", "qz", "qw"])
+    df = pd.read_csv(BASE_PATH / f'{input_file}', usecols=["timestamp", "x", "y", "z", "qx", "qy", "qz", "qw"])
 
-    timestamps = df['Timestamp'].values
+    timestamps = df['timestamp'].values
     poses = []
 
     for i in range(len(timestamps)):
-        x = df['X'][i] - df['X'][0]
-        y = df['Y'][i] - df['Y'][0]
-        z = df['Z'][i] - df['Z'][0]
+        x = df['x'][i] - df['x'][0]
+        y = df['y'][i] - df['y'][0]
+        z = df['z'][i] - df['z'][0]
         qx = df['qx'][i]
         qy = df['qy'][i]
         qz = df['qz'][i]
@@ -86,7 +100,7 @@ def main(input_file, covariance, points, quiver, output):
     plt.show()
 
     if output:
-        df = pd.DataFrame(columns=['Timestamp', 'X', 'Y', 'Z', 'qx', 'qy', 'qz', 'qw'])
+        df = pd.DataFrame(columns=['timestamp', 'x', 'y', 'z', 'qx', 'qy', 'qz', 'qw'])
         for i in range(len(timestamps_interpolation)):
             T = traj_estim[i]
             x = T[0, 3]

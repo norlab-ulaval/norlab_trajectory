@@ -20,7 +20,7 @@ To interpolate a pose or a pose's covariance, you can use the query time timesta
 sudo apt -q -y install build-essential cmake libomp-dev
 ```````
 
-### Install eigen librairy
+### Install eigen library
 
 ```````
 sudo apt-get install libeigen3-dev

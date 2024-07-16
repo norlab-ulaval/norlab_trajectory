@@ -1,0 +1,6 @@
+[submodule "third-party/steam"]
+	path = third-party/steam
+	url = git@github.com:norlab-ulaval/steam.git
+[submodule "third-party/lgmath"]
+	path = third-party/lgmath
+	url = git@github.com:norlab-ulaval/lgmath.git

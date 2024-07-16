@@ -1,11 +1,11 @@
 # norlab_trajectory
-This repositery allow us to interpolate trajectories from localization algorithms using Gaussian Processes and STEAM (Simultaneous Trajectory Estimation and Mapping) optimization library made by ASRL (Autonomous Space Robotics Lab) of University of Toronto.
+This repository allow us to interpolate trajectories from localization algorithms using Gaussian Processes and STEAM (Simultaneous Trajectory Estimation and Mapping) optimization library made by ASRL (Autonomous Space Robotics Lab) of University of Toronto.
 
 ## Usage
 
 Examples of how to use the library can be found in the test folder.
 ```
-cd test
+cd examples
 python3 interpolation.py -i f1tenth.csv
 ```
 

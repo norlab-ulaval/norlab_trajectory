@@ -1,7 +1,7 @@
 # norlab_trajectory
 This repository allow us to interpolate trajectories from localization algorithms using Gaussian Processes and STEAM (Simultaneous Trajectory Estimation and Mapping) optimization library made by ASRL (Autonomous Space Robotics Lab) of University of Toronto.
 
-## Usage
+# Usage
 
 Examples of how to use the library can be found in the test folder.
 ```
@@ -12,7 +12,25 @@ python3 interpolation.py -i f1tenth.csv
 To create a trajectory, you can use the `Trajectory(poses)` function. 
 To interpolate a pose or a pose's covariance, you can use the query time timestamp and specify it to the `getPose(queryTime)` or `getPoseCovariance(queryTime)` functions.
 
-## Prerequisites
+To interpolated your own trajectory you need to use a tum format, you can use the `rosbag_to_tum_traj.py` in the script folder to convert a rosbag file topic to a tum trajectory file.
+```
+cd scripts
+python3 rosbag_to_tum_traj.py -i <bag_name>.bag -t <topic_name> -o <trajectory_name>.csv
+```
+
+# Prerequisites
+
+## Install using script
+
+To install the library and its dependencies, you can use the `install.sh` script.
+```
+git clone --recurse-submodules git@github.com:norlab-ulaval/norlab_trajectory.git
+./install.sh
+```
+
+## Install from source
+
+Or you can install the library and its dependencies manually.
 
 ### Install C++ compiler, CMake
 
@@ -52,7 +70,7 @@ pip3 install pybind11
 ```````
 Or follow the instructions here : [https://github.com/pybind/pybind11](https://github.com/pybind/pybind11).
 
-## Compilation
+# Compilation
 ```````
 mkdir build
 cd build

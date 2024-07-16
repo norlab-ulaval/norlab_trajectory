@@ -10,6 +10,23 @@ from tqdm import tqdm
 
 
 def main(bag_name, output_path, topic_name):
+    """
+    Extracts a trajectory from a rosbag file and saves it to a CSV file in TUM format.
+    
+    Parameters
+    ----------
+    bag_name : str
+        Name of the input rosbag file.
+    output_path : str
+        Name of the output CSV file.
+    topic_name : str
+        Name of the topic to extract.
+    
+    Returns
+    -------
+    None
+        The function saves the trajectory to a CSV file in TUM format.
+    """
 
     input_filepath = bag_name
 

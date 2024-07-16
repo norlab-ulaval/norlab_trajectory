@@ -14,8 +14,8 @@ from tqdm import tqdm
 
 import norlab_trajectory
 
-BASE_PATH = Path(__file__).absolute().parents[1] / 'test' / 'trajectories_examples'
-OUTPUT_PATH = Path(__file__).absolute().parents[1] / 'test' / 'output'
+BASE_PATH = Path(__file__).absolute().parents[1] / 'examples' / 'trajectories_examples'
+OUTPUT_PATH = Path(__file__).absolute().parents[1] / 'examples' / 'output'
 import argparse
 
 
